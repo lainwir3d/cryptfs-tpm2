@@ -35,6 +35,7 @@
 
 static void *tcti_handle;
 
+#ifndef TSS2_NO_ABRMD
 TSS2_TCTI_CONTEXT *
 init_tcti_tabrmd(void)
 {
@@ -94,6 +95,7 @@ init_tcti_tabrmd(void)
 
 	return ctx;
 }
+#endif
 
 TSS2_TCTI_CONTEXT *
 init_tcti_device(void)
@@ -190,17 +192,23 @@ cryptfs_tpm2_tcti_init_context(void)
 
 	tcti_str = getenv("TSS2_TCTI");
 	if (!tcti_str) {
+#ifndef TSS2_NO_ABRMD
 		tcti_str = "tabrmd";
+#else
+		tcti_str = "device";
+#endif
 
 		info("Use %s as the default tcti interface\n", tcti_str);
 	}
 
-	if (!strcmp(tcti_str, "tabrmd"))
-		return init_tcti_tabrmd();
-	else if (!strcmp(tcti_str, "device"))
+	if (!strcmp(tcti_str, "device"))
 		return init_tcti_device();
 	else if (!strcmp(tcti_str, "socket"))
 		return init_tcti_socket();
+#ifndef TSS2_NO_ABRMD
+	else if (!strcmp(tcti_str, "tabrmd"))
+		return init_tcti_tabrmd();
+#endif
 	else
 		err("Invalid tcti interface specified (%s)\n", tcti_str);
 

@@ -64,11 +64,19 @@
 #ifndef TSS2_LEGACY_V1
 #include <tss2/tss2_tcti_mssim.h>
 #include <tss2/tss2_tcti_device.h>
+
+#ifndef TSS2_NO_ABRMD
 #include <tss2/tss2-tcti-tabrmd.h>
+#endif
+
 #else
 #include <tcti/tcti_socket.h>
 #include <tcti/tcti_device.h>
+
+#ifndef TSS2_NO_ABRMD
 #include <tcti/tcti-tabrmd.h>
+#endif
+
 #endif
 
 #define stringify(x)			#x
